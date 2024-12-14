@@ -23,12 +23,9 @@ services:
       DB_PASS: password
       DB_HOST: db
       DB_NAME: mydb
-      MQ_HOST: rabbitmq
     depends_on:
       db:
         condition: service_healthy
-      rabbitmq:
-        condition: service_started
     mem_limit: 512m
     cpus: 0.5
 
