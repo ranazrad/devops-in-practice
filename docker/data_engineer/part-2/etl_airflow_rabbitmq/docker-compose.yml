@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  etl:
+    build: .
+    environment:
+      DB_USER: user
+      DB_PASS: password
+      DB_HOST: db
+      DB_NAME: mydb
+      MQ_HOST: rabbitmq
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    mem_limit: 512m
+    cpus: 0.5
+
+  airflow:
+    image: apache/airflow:2.5.0
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__FERNET_KEY: secret_fernet_key
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: sqlite:////usr/local/airflow/airflow.db
+    volumes:
+      - ./dags:/opt/airflow/dags
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow webserver &
+      airflow scheduler
+      "
+    ports:
+      - "8080:8080"
+    depends_on:
+      etl:
+        condition: service_started
+    mem_limit: 1g
+    cpus: 1.0
+
+volumes:
+  db_data:
