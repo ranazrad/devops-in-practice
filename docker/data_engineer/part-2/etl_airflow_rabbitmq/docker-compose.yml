@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: mysql:8.0
@@ -49,13 +51,14 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./airflow:/opt/airflow   # Persistent volume for SQLite database
+      - ./airflow:/opt/airflow
     ports:
-      - "8080:8080"   # Expose Airflow webserver on localhost:8080
-    command: >
+      - "8080:8080"
+    entrypoint: >
       bash -c "
       airflow db init &&
-      airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin &&
+      airflow db upgrade &&
+      airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true &&
       airflow scheduler &
       airflow webserver
       "
