@@ -46,19 +46,21 @@ services:
     environment:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
       AIRFLOW__CORE__FERNET_KEY: secret_fernet_key
+      # Use the recommended section for sql_alchemy_conn in Airflow 2.5.0:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
     volumes:
       - ./dags:/opt/airflow/dags
       - ./airflow:/opt/airflow
     ports:
       - "8080:8080"
+    # The entrypoint ensures the database is initialized and a user is created before starting
     entrypoint: >
       bash -c "
       airflow db init &&
       airflow db upgrade &&
       airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true &&
-      airflow scheduler &
-      airflow webserver
+      airflow webserver & sleep 5 &&
+      airflow scheduler
       "
     depends_on:
       db:
