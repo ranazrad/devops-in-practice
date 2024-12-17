@@ -83,8 +83,23 @@ def load_data(df):
     engine = sqlalchemy.create_engine(
         f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
     )
-    df.to_sql("users", engine, if_exists="replace", index=False)
-    logging.info("Data loaded successfully into MySQL.")
+
+    # Ensure the table exists without constraints
+    with engine.connect() as connection:
+        connection.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            first_name VARCHAR(50),
+            last_name VARCHAR(50),
+            email VARCHAR(100),
+            country VARCHAR(50),
+            username VARCHAR(50)
+        )
+        """)
+
+    # Append data to the table without deduplication
+    df.to_sql("users", engine, if_exists="append", index=False)
+    logging.info("Data appended successfully into MySQL.")
 
 def main():
     wait_for_db()
