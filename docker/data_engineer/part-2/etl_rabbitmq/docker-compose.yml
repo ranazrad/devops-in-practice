@@ -25,8 +25,18 @@ services:
       interval: 10s
       retries: 5
 
+  producer:
+    build: .
+    command: python producer.py
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    mem_limit: 128m
+    cpus: 0.25
+
   etl:
     build: .
+    command: python etl.py
     environment:
       DB_USER: user
       DB_PASS: password
