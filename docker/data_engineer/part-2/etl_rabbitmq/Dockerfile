@@ -1,16 +1,18 @@
-FROM python:3.9-slim
+FROM python:3.8-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set work directory
 WORKDIR /app
 
+# Install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-COPY etl.py .
-COPY producer.py .
+# Copy project
+COPY . .
 
-ENV DB_USER=user
-ENV DB_PASS=password
-ENV DB_HOST=db
-ENV DB_NAME=mydb
-ENV MQ_HOST=rabbitmq
-
-CMD ["python", "etl.py"]
+# Default command
+CMD ["python"]
