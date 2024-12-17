@@ -41,33 +41,5 @@ services:
     mem_limit: 512m
     cpus: 0.5
 
-  airflow:
-    image: apache/airflow:2.5.0
-    environment:
-      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
-      # Replace THIS_IS_YOUR_FERNET_KEY with the newly generated key
-      AIRFLOW__CORE__FERNET_KEY: THIS_IS_YOUR_FERNET_KEY
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./airflow:/opt/airflow
-    ports:
-      - "8080:8080"
-    entrypoint: >
-      bash -c "
-      set -e &&
-      airflow db reset --yes &&
-      airflow db init &&
-      airflow db check &&
-      airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin &&
-      airflow webserver & sleep 5 &&
-      airflow scheduler
-      "
-    depends_on:
-      db:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-
 volumes:
   db_data:
