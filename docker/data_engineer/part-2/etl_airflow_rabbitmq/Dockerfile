@@ -21,6 +21,7 @@ FROM python:3.9-slim
 WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 COPY etl.py .
+COPY producer.py .
 ENV DB_USER=user
 ENV DB_PASS=password
 ENV DB_HOST=db
