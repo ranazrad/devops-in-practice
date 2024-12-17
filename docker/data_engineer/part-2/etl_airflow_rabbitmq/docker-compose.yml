@@ -45,7 +45,8 @@ services:
     image: apache/airflow:2.5.0
     environment:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
-      AIRFLOW__CORE__FERNET_KEY: Q0YyVgkCuHfrKSPhiOl1kBwr5Fv-X4rMg50F1gJ7S0g=
+      # Replace THIS_IS_YOUR_FERNET_KEY with the newly generated key
+      AIRFLOW__CORE__FERNET_KEY: THIS_IS_YOUR_FERNET_KEY
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
     volumes:
       - ./dags:/opt/airflow/dags
@@ -55,8 +56,8 @@ services:
     entrypoint: >
       bash -c "
       set -e &&
+      airflow db reset --yes &&
       airflow db init &&
-      airflow db upgrade &&
       airflow db check &&
       airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin &&
       airflow webserver & sleep 5 &&
