@@ -15,7 +15,6 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
-      timeout: 3s
       retries: 5
 
   rabbitmq:
@@ -26,7 +25,6 @@ services:
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
-      timeout: 5s
       retries: 5
 
   etl:
@@ -41,7 +39,7 @@ services:
       db:
         condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
     mem_limit: 512m
     cpus: 0.5
 
@@ -49,23 +47,13 @@ services:
     image: apache/airflow:2.5.0
     environment:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
-      AIRFLOW__CORE__FERNET_KEY: secret_fernet_key
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: sqlite:////usr/local/airflow/airflow.db
     volumes:
       - ./dags:/opt/airflow/dags
-    command: >
-      bash -c "
-      airflow db init &&
-      airflow webserver &
-      airflow scheduler
-      "
     ports:
       - "8080:8080"
     depends_on:
       etl:
         condition: service_started
-    mem_limit: 1g
-    cpus: 1.0
 
 volumes:
   db_data:
