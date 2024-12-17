@@ -1,4 +1,5 @@
 pandas==1.5.3
+numpy==1.23.5
 requests==2.31.0
 sqlalchemy==1.4.48
 pymysql==1.0.3
