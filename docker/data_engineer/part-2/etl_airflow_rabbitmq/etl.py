@@ -1,5 +1,4 @@
 import os
-import requests
 import pandas as pd
 import sqlalchemy
 import pika
@@ -8,9 +7,9 @@ import time
 import logging
 import pymysql
 
-# -----------------------
+# ------------------------
 # Configuration and Setup
-# -----------------------
+# ------------------------
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -26,6 +25,9 @@ DB_HOST = os.environ.get("DB_HOST", "db")
 DB_NAME = os.environ.get("DB_NAME", "mydb")
 MQ_HOST = os.environ.get("MQ_HOST", "rabbitmq")
 
+# ------------------------
+# ETL Functions
+# ------------------------
 def wait_for_db():
     for attempt in range(10):
         try:
@@ -38,12 +40,11 @@ def wait_for_db():
             )
             conn.close()
             logging.info("Database connection successful.")
-            break
+            return
         except pymysql.err.OperationalError:
-            logging.warning("Database not ready, waiting...")
-            time.sleep(3)
-    else:
-        raise Exception("Database was not ready after multiple attempts.")
+            logging.warning("Database not ready. Retrying...")
+            time.sleep(5)
+    raise Exception("Database not ready after multiple attempts.")
 
 def consume_messages():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=MQ_HOST))
@@ -54,8 +55,7 @@ def consume_messages():
     for method_frame, properties, body in channel.consume('users_queue', inactivity_timeout=5):
         if body is None:
             break
-        message = json.loads(body)
-        messages.append(message)
+        messages.append(json.loads(body))
         channel.basic_ack(method_frame.delivery_tag)
 
     connection.close()
@@ -64,38 +64,33 @@ def consume_messages():
 
 def transform_data(data):
     if not data:
-        logging.warning("No data to transform.")
         return pd.DataFrame()
-
-    records = []
-    for user in data:
-        record = {
+    return pd.DataFrame([
+        {
             "first_name": user["name"]["first"],
             "last_name": user["name"]["last"],
             "email": user["email"],
             "country": user["location"]["country"],
             "username": user["login"]["username"]
         }
-        records.append(record)
-    df = pd.DataFrame(records)
-    logging.info(f"Transformed data into DataFrame with {len(df)} records.")
-    return df
+        for user in data
+    ])
 
 def load_data(df):
     if df.empty:
-        logging.info("No data to load into the database.")
+        logging.info("No data to load.")
         return
     engine = sqlalchemy.create_engine(
-        f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:3306/{DB_NAME}"
+        f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
     )
     df.to_sql("users", engine, if_exists="replace", index=False)
-    logging.info("Successfully loaded data into the 'users' table!")
+    logging.info("Data loaded successfully into MySQL.")
 
 def main():
     wait_for_db()
     raw_data = consume_messages()
     if not raw_data:
-        logging.info("No data to process. Exiting ETL.")
+        logging.info("No data to process. Exiting.")
         return
     transformed_data = transform_data(raw_data)
     load_data(transformed_data)
