@@ -45,13 +45,24 @@ services:
     image: apache/airflow:2.5.0
     environment:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__FERNET_KEY: secret_fernet_key
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: sqlite:////usr/local/airflow/airflow.db
     volumes:
       - ./dags:/opt/airflow/dags
     ports:
-      - "8080:8080"
+      - "8080:8080"   # Expose Airflow webserver on localhost:8080
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin &&
+      airflow scheduler &
+      airflow webserver
+      "
     depends_on:
-      etl:
-        condition: service_started
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   db_data:
