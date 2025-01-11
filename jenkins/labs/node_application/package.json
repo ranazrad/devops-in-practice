@@ -1,0 +1,17 @@
+{
+  "name": "jenkins-docker-nodejs",
+  "version": "1.0.0",
+  "description": "A simple Node.js application for Jenkins hands-on lab",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^27.0.0",
+    "supertest": "^6.1.3"
+  }
+}
