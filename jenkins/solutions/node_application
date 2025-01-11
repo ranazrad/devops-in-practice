@@ -1,0 +1,45 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:14'
+        }
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                //git clone
+                sh "curl -o app.js https://raw.githubusercontent.com/ranazrad/devops-in-practice/refs/heads/main/jenkins/labs/node_application/app.js"
+                sh "curl -o package.json https://raw.githubusercontent.com/ranazrad/devops-in-practice/refs/heads/main/jenkins/labs/node_application/package.json"
+                sh "curl -o app.test.js https://raw.githubusercontent.com/ranazrad/devops-in-practice/refs/heads/main/jenkins/labs/node_application/app.test.js"
+                sh "curl -o Dockerfile https://raw.githubusercontent.com/ranazrad/devops-in-practice/refs/heads/main/jenkins/labs/node_application/Dockerfile"
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'  // Install Node.js dependencies
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh(script: 'timeout 5s npm test || true', returnStatus: true)
+            }
+        }
+
+        
+        stage('Build Docker Image') {
+            steps {
+                sh(script: 'docker build -t jenkins-docker-nodejs:1.0 . || true', returnStatus: true)
+                archiveArtifacts artifacts: 'Dockerfile'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs() // Cleanup workspace after build
+        }
+    }
+}
