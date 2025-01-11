@@ -1,0 +1,53 @@
+@Library('my-shared-library') _
+
+pipeline {
+    agent any
+    stages {
+        stage('Retry Tests') {
+            steps {
+                script {
+                    retryTests({
+                        sh 'make test' // Replace with your test command
+                    }, 3, demo = true) // Set demo to false for real retries
+                }
+            }
+        }
+        stage('Run SonarQube Analysis') {
+            steps {
+                script {
+                    runSonarQubeAnalysis(
+                        projectKey: 'my-project',
+                        sonarUrl: 'http://sonarqube.example.com',
+                        credentialsId: 'sonarqube-token',
+                        demo: true // Set to false for real integration
+                    )
+                }
+            }
+        }
+        stage('Upload Artifact to Nexus') {
+            steps {
+                script {
+                    uploadToNexus(
+                        nexusUrl: 'http://nexus.example.com/repository/my-repo/',
+                        credentialsId: 'nexus-credentials',
+                        artifactPath: 'build/libs/my-artifact.jar',
+                        demo: true // Set to false for real integration
+                    )
+                }
+            }
+        }
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    buildAndPushDockerImage(
+                        imageName: 'my-app',
+                        dockerRegistry: 'registry.example.com',
+                        credentialsId: 'docker-credentials',
+                        tag: 'v1.0.0',
+                        demo: true // Set to false for real integration
+                    )
+                }
+            }
+        }
+    }
+}
