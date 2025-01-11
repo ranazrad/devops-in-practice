@@ -1,0 +1,55 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//LAB Link -> https://docs.google.com/document/d/1A_5DqbU5g2JoJ5xTVM3qO2niiBC8cVcl1qbDQyNY9GM/edit?tab=t.daaxkdox733
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Define reusable function to run a stage
+def runStage = { stageName, command ->
+    stage(stageName) {
+        echo "Starting stage: ${stageName}"
+        sh command
+    }
+}
+
+// Define function for parallel steps
+def parallelSteps = {
+    parallel (
+        'Lint': {
+            runStage('Lint', 'echo "Running Python linting (e.g., flake8)..."')
+        },
+        'Security Test': {
+            runStage('Security Test', 'echo "Running security checks (e.g., safety)..."')
+        }
+    )
+}
+
+// Scripted Pipeline
+def shouldDeploy = false
+
+def pipeline = {
+    node {
+        try {
+            stage('Clone') {
+                runStage('Clone', 'echo "Cloning repository..."')
+            }
+
+            stage('Build') {
+                runStage('Build', 'echo "Building Python project..."')
+            }
+
+            stage('Parallel Tasks') {
+                parallelSteps()
+            }
+
+            stage('Deploy') {
+                input message: 'Do you want to deploy to production?', ok: 'Yes'
+                runStage('Deploy', 'echo "Deploying Python project to production..."')
+            }
+
+        } finally {
+            stage('Cleanup') {
+                runStage('Cleanup', 'echo "Cleaning up workspace..."')
+            }
+        }
+    }
+}
+
+pipeline()
