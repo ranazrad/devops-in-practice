@@ -1,0 +1,47 @@
+pipeline {
+    agent none
+    stages {
+        stage('Setup Node.js 14') {
+            agent {
+                docker {
+                    image 'node:14'
+                }
+            }
+            steps {
+                script {
+                    echo 'Using Node.js version 14'
+                    sh 'node -v'
+                    sh 'npm install || echo "npm install failed!"'
+                }
+            }
+        }
+        stage('Setup Node.js 16') {
+            agent {
+                docker {
+                    image 'node:16'
+                }
+            }
+            steps {
+                script {
+                    echo 'Using Node.js version 16'
+                    sh 'node -v'
+                    sh 'npm install || echo "npm install failed!"'
+                }
+            }
+        }
+        stage('Setup Node.js 18') {
+            agent {
+                docker {
+                    image 'node:18'
+                }
+            }
+            steps {
+                script {
+                    echo 'Using Node.js version 18'
+                    sh 'node -v'
+                    sh 'npm install || echo "npm install failed!"'
+                }
+            }
+        }
+    }
+}
