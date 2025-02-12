@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Music Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .table {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center text-primary">🎵 My Music Library</h2>
+
+    <!-- Song List -->
+    <table class="table table-hover mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Artist</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for song in songs %}
+            <tr>
+                <td>{{ song.id }}</td>
+                <td>{{ song.title }}</td>
+                <td>{{ song.artist }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add New Song Form -->
+    <div class="card mt-4 p-3">
+        <h4>Add a New Song</h4>
+        <form id="songForm">
+            <div class="mb-3">
+                <label class="form-label">Song Title</label>
+                <input type="text" class="form-control" id="title" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Artist</label>
+                <input type="text" class="form-control" id="artist" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Song</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#songForm").submit(function (event) {
+            event.preventDefault();
+
+            var title = $("#title").val();
+            var artist = $("#artist").val();
+
+            $.post("/songs", { title: title, artist: artist }, function (data) {
+                $("table tbody").append(`<tr><td>New</td><td>${data.title}</td><td>${data.artist}</td></tr>`);
+                $("#title").val("");
+                $("#artist").val("");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

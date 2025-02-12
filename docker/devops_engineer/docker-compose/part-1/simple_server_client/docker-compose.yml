@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    depends_on:
+      db_mysql:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    networks:
+      - app_layer
+    environment:
+      - DB_HOST=db_mysql
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=music
+
+  db_mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=music
+    ports:
+      - "3306:3306"
+    networks:
+      - app_layer
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+
+networks:
+  app_layer:
+    driver: bridge
+
+volumes:
+  db_data:
