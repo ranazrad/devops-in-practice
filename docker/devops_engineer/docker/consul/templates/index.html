@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Consul & Vault UI</title>
+  <!-- Simple Bootstrap CSS CDN (for demonstration) -->
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  >
+</head>
+<body class="bg-light">
+<div class="container my-5">
+  <h1 class="mb-4">Consul & Vault UI Demo</h1>
+
+  <!-- Display result messages -->
+  {% if result_message %}
+    <div class="alert alert-info" role="alert">
+      {{ result_message }}
+    </div>
+  {% endif %}
+
+  <div class="row">
+    <!-- Set Consul Key -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3>Set Consul Key</h3>
+          <form method="POST">
+            <input type="hidden" name="form_type" value="set_consul">
+            <div class="form-group">
+              <label for="consul_key">Key:</label>
+              <input type="text" class="form-control" id="consul_key" name="consul_key" required>
+            </div>
+            <div class="form-group">
+              <label for="consul_value">Value:</label>
+              <input type="text" class="form-control" id="consul_value" name="consul_value" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Set Key in Consul</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Get Consul Key -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3>Get Consul Key</h3>
+          <form method="POST">
+            <input type="hidden" name="form_type" value="get_consul">
+            <div class="form-group">
+              <label for="consul_key_get">Key:</label>
+              <input type="text" class="form-control" id="consul_key_get" name="consul_key_get" required>
+            </div>
+            <button type="submit" class="btn btn-success">Get Key from Consul</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Set Vault Secret -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3>Set Vault Secret</h3>
+          <form method="POST">
+            <input type="hidden" name="form_type" value="set_vault">
+            <div class="form-group">
+              <label for="vault_path">Secret Path:</label>
+              <input type="text" class="form-control" id="vault_path" name="vault_path" placeholder="e.g. myapp/secret" required>
+            </div>
+            <div class="form-group">
+              <label for="vault_secret_key">Secret Key:</label>
+              <input type="text" class="form-control" id="vault_secret_key" name="vault_secret_key" placeholder="e.g. password" required>
+            </div>
+            <div class="form-group">
+              <label for="vault_secret_value">Secret Value:</label>
+              <input type="text" class="form-control" id="vault_secret_value" name="vault_secret_value" placeholder="e.g. s3cr3tPass" required>
+            </div>
+            <button type="submit" class="btn btn-warning">Set Secret in Vault</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Get Vault Secret -->
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3>Get Vault Secret</h3>
+          <form method="POST">
+            <input type="hidden" name="form_type" value="get_vault">
+            <div class="form-group">
+              <label for="vault_path_get">Secret Path:</label>
+              <input type="text" class="form-control" id="vault_path_get" name="vault_path_get" placeholder="e.g. myapp/secret" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Get Secret from Vault</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- /container -->
+
+<!-- Optional Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"
+></script>
+</body>
+</html>
