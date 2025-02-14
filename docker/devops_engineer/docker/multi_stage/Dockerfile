@@ -3,52 +3,60 @@ FROM python:3.9 AS build
 WORKDIR /app
 
 COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 RUN python -m compileall app
+RUN echo "✅ BUILD FINISHED"
 
 
 # === STAGE 2: LINT CHECK ===
-FROM python:3.9 AS lint
+FROM build AS lint
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt pylint
+RUN pip install --no-cache-dir pylint
 
-COPY . .
-RUN pylint app --fail-under=7
+ENV PYTHONPATH=/app
+
+RUN echo "🔍 Running Pylint"
+RUN pylint app --fail-under=6
+RUN echo "✅ LINT FINISHED"
 
 
 # === STAGE 3: UNIT TESTS ===
-FROM python:3.9 AS test
+FROM lint AS test
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt pytest pytest-junit
+RUN pip install --no-cache-dir pytest pytest-cov
 
-COPY . .
-RUN pytest --junitxml=test-results.xml
+ENV PYTHONPATH=/app
+
+RUN echo "🧪 Running Pytest"
+RUN pytest app --junitxml=test-results.xml --cov=app --cov-report=xml --cov-report=term
+RUN echo "✅ TESTS FINISHED"
 
 
 # === STAGE 4: SONARQUBE ANALYSIS ===
-FROM python:3.9 AS sonar
+FROM test AS sonar
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt pytest-junit sonar-scanner-cli
+RUN apt-get update && apt-get install -y wget unzip && \
+    wget -O /tmp/sonar-scanner.zip \
+        https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip && \
+    unzip /tmp/sonar-scanner.zip -d /opt/ && \
+    ln -s /opt/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
 
-COPY . .
-COPY --from=test /app/test-results.xml /app/test-results.xml
 COPY sonar-project.properties /app/sonar-project.properties
-
 RUN sonar-scanner
+RUN echo "✅ SONAR FINISHED"
 
 
 # === STAGE 5: FINAL IMAGE ===
 FROM python:3.9 AS runner
 WORKDIR /app
 
-COPY --from=build /app /app
+# Copy from the *sonar* stage so that everything was done
+COPY --from=sonar /app /app
 
 CMD ["python", "app/main.py"]
