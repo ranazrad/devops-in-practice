@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus
+    restart: always
+    ports:
+      - "8081:8081"  # Expose Nexus on 8081 (optional if only accessed via Nginx)
+    volumes:
+      - nexus-data:/nexus-data
+    environment:
+      # Adjust JVM memory settings as needed
+      - INSTALL4J_ADD_VM_PARAMS=-Xms1200m -Xmx1200m
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"  # Nginx listens on port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - nexus
+
+volumes:
+  nexus-data:
