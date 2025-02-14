@@ -1,0 +1,51 @@
+services:
+  consul:
+    image: hashicorp/consul:1.14.4
+    container_name: consul_server
+    command: >
+      consul agent -server -ui
+      -bootstrap-expect=1
+      -client=0.0.0.0
+      -data-dir=/consul/data
+    ports:
+      - "8500:8500"       # Consul UI
+    volumes:
+      - consul_data:/consul/data
+    networks:
+      - mynet
+
+  vault:
+    image: hashicorp/vault:1.13.2
+    container_name: vault_server
+    ports:
+      - "8200:8200"       # Vault UI
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    command: server -dev -dev-root-token-id=root
+    networks:
+      - mynet
+    depends_on:
+      - consul
+
+  pythonapp:
+    build: .
+    container_name: python_app
+    depends_on:
+      - consul
+      - vault
+    environment:
+      CONSUL_HOST: consul       # Docker Compose service name
+      VAULT_HOST: vault         # Docker Compose service name
+      VAULT_TOKEN: root         # Dev mode root token
+    ports:
+      - "5010:5000"            # Flask UI now on 5010
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
+
+volumes:
+  consul_data:
