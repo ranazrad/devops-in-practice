@@ -53,7 +53,7 @@ RUN echo "✅ SONAR FINISHED"
 
 
 # === STAGE 5: FINAL IMAGE ===
-FROM python:3.9 AS runner
+FROM python:3.14.0a5-alpine3.20 AS runner
 WORKDIR /app
 
 # Copy from the *sonar* stage so that everything was done
