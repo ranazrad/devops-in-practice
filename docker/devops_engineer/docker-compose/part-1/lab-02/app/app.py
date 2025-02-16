@@ -10,4 +10,4 @@ def home():
     return f"Hello, Docker! This page has been visited {visits} times."
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5010)
