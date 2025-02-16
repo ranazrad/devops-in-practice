@@ -35,11 +35,10 @@ services:
       - consul
       - vault
     environment:
-      CONSUL_HOST: consul       # Docker Compose service name
-      VAULT_HOST: vault         # Docker Compose service name
-      VAULT_TOKEN: root         # Dev mode root token
+      CONSUL_HOST: consul       
+      VAULT_HOST: vault        
     ports:
-      - "5010:5000"            # Flask UI now on 5010
+      - "5010:5010"          
     networks:
       - mynet
 
