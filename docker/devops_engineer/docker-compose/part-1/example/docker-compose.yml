@@ -7,7 +7,7 @@ services:
       db_mysql:
         condition: service_healthy
     ports:
-      - "5000:5000"
+      - "5010:5010"
     networks:
       - app_layer
     environment:
