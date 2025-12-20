@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "2Pd3TqxdH09k7OO8ObbMDCIVXQwZp5hO2D5XnwoMZCWeE/Ord08dMgdgr+Op/Mk4R/VyANppERPgXkjEtHzu4g==",
+  "success": true,
+  "projectFilePath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_01/acmeapi.csproj",
+  "expectedPackageFiles": [
+    "/Users/ranazrad/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/Users/ranazrad/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/ranazrad/.nuget/packages/swashbuckle.aspnetcore/6.2.3/swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "/Users/ranazrad/.nuget/packages/swashbuckle.aspnetcore.swagger/6.2.3/swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "/Users/ranazrad/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.2.3/swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "/Users/ranazrad/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.2.3/swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
