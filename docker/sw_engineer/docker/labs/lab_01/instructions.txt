@@ -1,3 +1,7 @@
+# Docker + Kestrel
+# ENV ASPNETCORE_HTTP_PORTS=8080 (Default)
+
 docker build -t acme-app:v1 .
 
 docker run -p 8080:8080 acme-app:v1
+
