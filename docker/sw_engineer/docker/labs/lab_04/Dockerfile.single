@@ -1,0 +1,34 @@
+# Using the heavy SDK image
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+
+# --- Mandatory Manual Installations ---
+# Fix: Using the updated GPG key handling for Trivy
+RUN apt-get update && apt-get install -y wget gnupg lsb-release \
+    && wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor -o /usr/share/keyrings/trivy.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee -a /etc/apt/sources.list.d/trivy.list \
+    && apt-get update \
+    && apt-get install -y trivy \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# --- Step 1: Copy Everything ---
+# No layer optimization here
+COPY . .
+
+# --- Step 2: Restore & Test ---
+RUN dotnet restore "src/MyApi/MyApi.csproj"
+WORKDIR "/app/tests/MyApi.Tests"
+RUN dotnet test --logger:trx
+
+# --- Step 3: Publish ---
+WORKDIR "/app/src/MyApi"
+RUN dotnet publish "MyApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# --- Step 4: Security Scan ---
+# Running Trivy on the local publish folder
+RUN trivy fs --exit-code 1 --severity HIGH,CRITICAL /app/publish
+
+# --- Final Execution ---
+WORKDIR /app/publish
+ENTRYPOINT ["dotnet", "MyApi.dll"]
