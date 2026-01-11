@@ -8,10 +8,14 @@ services:
       MYSQL_DATABASE: SafeDocDb
     ports:
       - "3306:3306"
+    networks:
+      - safedoc-net
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    volumes:
+      - mysql_data:/var/lib/mysql
 
   # 2. Message Broker
   broker-rabbit:
@@ -20,6 +24,8 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    networks:
+      - safedoc-net
 
   # 3. Observability
   logs-seq:
@@ -30,6 +36,10 @@ services:
       SEQ_FIRSTRUN_ADMINPASSWORD: admin
     ports:
       - "5341:80"
+    volumes:
+      - seq_data:/data
+    networks:
+      - safedoc-net
 
   # 4. Producer API
   sanitizer-api:
@@ -43,6 +53,8 @@ services:
       - ConnectionStrings__DefaultConnection=server=mysql-db;database=SafeDocDb;user=root;password=admin
       - MessageBroker=broker-rabbit
       - Serilog__SeqUrl=http://logs-seq:80
+    networks:
+      - safedoc-net
     depends_on:
       mysql-db:
         condition: service_healthy
@@ -59,6 +71,8 @@ services:
       - ConnectionStrings__DefaultConnection=server=mysql-db;database=SafeDocDb;user=root;password=admin
       - MessageBroker=broker-rabbit
       - Serilog__SeqUrl=http://logs-seq:80
+    networks:
+      - safedoc-net
     depends_on:
       sanitizer-api:
         condition: service_started
@@ -74,6 +88,16 @@ services:
     environment:
       - ApiUrl=http://sanitizer-api:8080
       - Serilog__SeqUrl=http://logs-seq:80
+    networks:
+      - safedoc-net
     depends_on:
       sanitizer-api:
         condition: service_started
+
+volumes:
+  mysql_data:
+  seq_data:
+
+networks:
+  safedoc-net:
+    driver: bridge
