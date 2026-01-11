@@ -1,0 +1,161 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.API/Sanitizer.API.csproj": {}
+  },
+  "projects": {
+    "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.API/Sanitizer.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.API/Sanitizer.API.csproj",
+        "projectName": "Sanitizer.API",
+        "projectPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.API/Sanitizer.API.csproj",
+        "packagesPath": "/Users/ranazrad/.nuget/packages/",
+        "outputPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.API/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ranazrad/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Shared/Sanitizer.Shared.csproj": {
+                "projectPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Shared/Sanitizer.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.22, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[7.2.0, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Sinks.Seq": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.416/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Shared/Sanitizer.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Shared/Sanitizer.Shared.csproj",
+        "projectName": "Sanitizer.Shared",
+        "projectPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Shared/Sanitizer.Shared.csproj",
+        "packagesPath": "/Users/ranazrad/.nuget/packages/",
+        "outputPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Shared/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ranazrad/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.416/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

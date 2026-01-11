@@ -1,0 +1,93 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Web/Sanitizer.Web.csproj": {}
+  },
+  "projects": {
+    "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Web/Sanitizer.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Web/Sanitizer.Web.csproj",
+        "projectName": "Sanitizer.Web",
+        "projectPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Web/Sanitizer.Web.csproj",
+        "packagesPath": "/Users/ranazrad/.nuget/packages/",
+        "outputPath": "/Users/ranazrad/Downloads/devops-in-practice/docker/sw_engineer/docker/labs/lab_05/Sanitizer.Web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/ranazrad/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Sinks.Seq": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.416/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

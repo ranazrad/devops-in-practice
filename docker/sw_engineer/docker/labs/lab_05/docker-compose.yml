@@ -1,0 +1,79 @@
+services:
+  # 1. Database
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: SafeDocDb
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # 2. Message Broker
+  broker-rabbit:
+    image: rabbitmq:3-management
+    container_name: broker-rabbit
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  # 3. Observability
+  logs-seq:
+    image: datalust/seq:latest
+    container_name: logs-seq
+    environment:
+      ACCEPT_EULA: Y
+      SEQ_FIRSTRUN_ADMINPASSWORD: admin
+    ports:
+      - "5341:80"
+
+  # 4. Producer API
+  sanitizer-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: sanitizer-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=server=mysql-db;database=SafeDocDb;user=root;password=admin
+      - MessageBroker=broker-rabbit
+      - Serilog__SeqUrl=http://logs-seq:80
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      broker-rabbit:
+        condition: service_started
+
+  # 5. Consumer Engine
+  sanitizer-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.engine
+    container_name: sanitizer-engine
+    environment:
+      - ConnectionStrings__DefaultConnection=server=mysql-db;database=SafeDocDb;user=root;password=admin
+      - MessageBroker=broker-rabbit
+      - Serilog__SeqUrl=http://logs-seq:80
+    depends_on:
+      sanitizer-api:
+        condition: service_started
+
+  # 6. Frontend
+  sanitizer-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: sanitizer-web
+    ports:
+      - "5050:8080"
+    environment:
+      - ApiUrl=http://sanitizer-api:8080
+      - Serilog__SeqUrl=http://logs-seq:80
+    depends_on:
+      sanitizer-api:
+        condition: service_started

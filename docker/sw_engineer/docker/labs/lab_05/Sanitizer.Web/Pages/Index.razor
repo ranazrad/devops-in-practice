@@ -1,0 +1,97 @@
+﻿@page "/"
+@using Sanitizer.Shared
+@using System.Text.Json
+@inject IConfiguration Config
+
+<PageTitle>SafeDoc Cyber Vault</PageTitle>
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1 class="display-4 text-success fw-bold">SafeDoc <i class="bi bi-shield-lock-fill"></i></h1>
+            <p class="text-secondary">Advanced Content Disarm & Reconstruction System</p>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white mb-4 shadow border-success">
+        <div class="card-body">
+            <h5 class="card-title text-success">Upload Suspicious File</h5>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control bg-secondary text-white border-0" placeholder="Enter filename (e.g. invoice.pdf)" @bind="newFileName" />
+                <button class="btn btn-success" type="button" @onclick="UploadFile">
+                    <i class="bi bi-cloud-upload"></i> Initialize Sanitization
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white shadow">
+        <div class="card-header border-secondary text-warning">
+            <i class="bi bi-activity"></i> Live Operation Monitor (Auto-refreshing)
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>File Name</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>System Log</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var doc in docs)
+                    {
+                        <tr>
+                            <td>#@doc.Id</td>
+                            <td>@doc.FileName</td>
+                            <td>@doc.CreatedAt.ToString("HH:mm:ss")</td>
+                            <td>
+                                @if (doc.Status == DocStatus.Pending) { <span class="badge bg-secondary">Pending Queue</span> }
+                                else if (doc.Status == DocStatus.Processing) { <span class="badge bg-warning text-dark">Whitening... <div class="spinner-border spinner-border-sm"></div></span> }
+                                else if (doc.Status == DocStatus.Clean) { <span class="badge bg-success">CLEAN <i class="bi bi-check-circle"></i></span> }
+                            </td>
+                            <td class="text-monospace small text-muted">@doc.Log</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string newFileName = "";
+    private List<DocRequest> docs = new();
+    private System.Threading.Timer? timer;
+    private HttpClient http = new HttpClient();
+
+    protected override void OnInitialized()
+    {
+        var apiUrl = Config["ApiUrl"] ?? "http://sanitizer-api:8080"; 
+        http.BaseAddress = new Uri(apiUrl);
+
+        timer = new System.Threading.Timer(async _ => await RefreshData(), null, 0, 1000);
+    }
+
+    private async Task RefreshData()
+    {
+        try
+        {
+            docs = await http.GetFromJsonAsync<List<DocRequest>>("api/docs") ?? new();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch { /* Ignore poll errors */ }
+    }
+
+    private async Task UploadFile()
+    {
+        if (string.IsNullOrWhiteSpace(newFileName)) return;
+
+        var req = new DocRequest { FileName = newFileName, Owner = "Admin" };
+        await http.PostAsJsonAsync("api/docs", req);
+        newFileName = "";
+        await RefreshData();
+    }
+}
