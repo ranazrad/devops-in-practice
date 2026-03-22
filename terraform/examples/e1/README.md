@@ -56,3 +56,21 @@ Run the `plan` command to see the changes Terraform will make to your AWS infras
 # Preview the infrastructure changes
 terraform plan
 ```
+
+## Step 4: Apply the Configuration
+
+Run the `apply` command to execute the actions proposed in the plan and provision the resources in your AWS account. You will be prompted to type `yes` to confirm.
+
+```bash
+# Create or update the infrastructure
+terraform apply
+```
+
+## Step 5: Destroy the Infrastructure
+
+When you no longer need the resources, use the `destroy` command to remove everything created by this Terraform configuration. This prevents unwanted AWS charges. You will be prompted to type `yes` to confirm.
+
+```bash
+# Tear down the infrastructure
+terraform destroy
+```
