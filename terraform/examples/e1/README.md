@@ -1,6 +1,6 @@
-# Acme Terraform AWS Plan Example
+# Acme Terraform AWS Example
 
-This contains a basic Terraform configuration to demonstrate how to authenticate with AWS, initialize the working directory, and generate an execution plan.
+This contains a basic Terraform configuration to demonstrate how to authenticate with AWS, initialize the working directory, generate an execution plan, apply the changes, inspect the state, and destroy the infrastructure.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This contains a basic Terraform configuration to demonstrate how to authenticate
 
 ## Step 1: Authenticate with AWS
 
-Before running Terraform, you must provide your AWS credentials. Choose one of the following methods (for Linux environments):
+Before running Terraform, you must provide your AWS credentials. Choose one of the following methods (for Linux/macOS environments):
 
 ### Option A: Using AWS CLI
 
@@ -33,7 +33,7 @@ export AWS_DEFAULT_REGION="us-east-1"
 
 ### Option C: Using an AWS Profile
 
-If you manage multiple AWS environments, you can configure named profiles in your `~/.aws/credentials` file (e.g., using `aws configure --profile my_profile`). To instruct Terraform to use a specific profile, export the `AWS_PROFILE` environment variable:
+If you manage multiple AWS environments, you can configure named profiles in your `~/.aws/credentials` file. To instruct Terraform to use a specific profile, export the `AWS_PROFILE` environment variable:
 
 ```bash
 export AWS_PROFILE="my_profile"
@@ -41,7 +41,7 @@ export AWS_PROFILE="my_profile"
 
 ## Step 2: Initialize Terraform
 
-Initialize the working directory containing the Terraform configuration files. This command downloads the required AWS provider plugin.
+Initialize the working directory containing the Terraform configuration files. This command downloads the required AWS provider plugin and creates the `.terraform` directory and lock file.
 
 ```bash
 # Initialize the Terraform working directory
@@ -66,7 +66,19 @@ Run the `apply` command to execute the actions proposed in the plan and provisio
 terraform apply
 ```
 
-## Step 5: Destroy the Infrastructure
+## Step 5: Inspect the State
+
+After a successful apply, Terraform creates a `terraform.tfstate` file (locally, unless a remote backend is configured) to keep track of the resources it manages. You can inspect this state to see the current infrastructure details.
+
+```bash
+# View a human-readable output of the current state
+terraform show
+
+# List all resources currently tracked in the state file
+terraform state list
+```
+
+## Step 6: Destroy the Infrastructure
 
 When you no longer need the resources, use the `destroy` command to remove everything created by this Terraform configuration. This prevents unwanted AWS charges. You will be prompted to type `yes` to confirm.
 
