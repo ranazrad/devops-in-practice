@@ -108,7 +108,7 @@ spec:
         command:
         - sh
         - -c
-        - jenkins-plugin-cli --plugins kubernetes workflow-aggregator configuration-as-code job-dsl pipeline-stage-view -d /usr/share/jenkins/ref/plugins
+        - jenkins-plugin-cli --plugins kubernetes workflow-aggregator configuration-as-code job-dsl pipeline-stage-view blueocean -d /usr/share/jenkins/ref/plugins
         volumeMounts:
         - name: plugin-dir
           mountPath: /usr/share/jenkins/ref/plugins
