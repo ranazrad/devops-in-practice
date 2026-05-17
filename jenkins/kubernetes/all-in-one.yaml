@@ -153,7 +153,7 @@ spec:
     app: jenkins-controller
   ports:
   - name: httpport
-    port: 8080
+    port: 8081
     targetPort: 8080
     nodePort: 32000
   - name: jnlpport
