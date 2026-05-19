@@ -49,7 +49,7 @@ data:
             name: "kubernetes"
             serverUrl: "https://kubernetes.default.svc.cluster.local"
             namespace: "jenkins"
-            jenkinsUrl: "http://jenkins-service.jenkins.svc.cluster.local:8080"
+            jenkinsUrl: "http://jenkins-service.jenkins.svc.cluster.local:8081"
             jenkinsTunnel: "jenkins-service.jenkins.svc.cluster.local:50000"
             templates:
               - name: "k8s-agent"
