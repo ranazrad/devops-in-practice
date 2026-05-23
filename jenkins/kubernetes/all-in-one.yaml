@@ -123,7 +123,7 @@ data:
                             sh """
                               echo "Deploying to Kubernetes..."
                               kubectl set image deployment/\${IMAGE_NAME} \
-                              \${IMAGE_NAME}=\${REGISTRY_USER}/\${IMAGE_NAME}:\text{\${IMAGE_TAG}} --namespace=jenkins
+                              \${IMAGE_NAME}=\${REGISTRY_USER}/\${IMAGE_NAME}:\${IMAGE_TAG} --namespace=jenkins
                               kubectl rollout status deployment/\${IMAGE_NAME} --namespace=jenkins
                             """
                           }
